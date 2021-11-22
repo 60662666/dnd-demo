@@ -7,6 +7,7 @@ class App extends Component {
         return (
             <div>
                 <p>final success</p>
+                <p>drop the beat</p>
             </div>
         );
     }
