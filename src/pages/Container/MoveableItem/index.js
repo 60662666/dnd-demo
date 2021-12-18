@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from 'react-dnd'
-import { CARD } from './itemTypes'
+import { CARD, FORMITEM } from './../itemTypes'
 import './index.less'
 // useDrag对应拖动源DragSource
 // useDrop对应放置目标DropTarget
-export default function Container({ id, text, index, moveCard }) {
+export default function MoveableItem({ id, text, index, moveCard }) {
     // cardRef 拖动源的连接器，连接真实dom与reactdnd系统
     const cardRef = useRef()// {current: null} 生成真实dom赋给ref.current
     const [,drop] = useDrop({
-        accept: CARD,
+        accept: FORMITEM,
         collect: () => ({}),
         hover(item, monitor) {
             // 获取被拖动的卡片的索引
@@ -16,11 +16,17 @@ export default function Container({ id, text, index, moveCard }) {
             // 当前hover的卡片索引
             const hoverIndex = index
             if(dragIndex === hoverIndex) return
-            const { top, bottom } = cardRef.current.getBoundingClientRect()
-            const hoverEleHalfHeight = (bottom - top)/3
-            const { y } = monitor.getClientOffset()
+            const { top, bottom, left, right } = cardRef.current.getBoundingClientRect()
+            const hoverOneThirdWidth = (bottom - top)/3
+            const hoverTwoThirdsWidth = (bottom - top)/3*2
+            const hoverOneThirdHeight = (left - right)/3
+            const hoverTwoThirdsHeight = (left - right)/3*2
+            const { x, y } = monitor.getClientOffset()
+            const hoverClientX = x - left
             const hoverClientY = y - top
-            if(dragIndex < hoverIndex && hoverClientY > hoverEleHalfHeight || dragIndex > hoverIndex && hoverClientY < hoverEleHalfHeight){
+            const conditionX = hoverClientX > hoverOneThirdWidth || hoverClientX < hoverTwoThirdsWidth
+            const conditionY = hoverClientY > hoverOneThirdHeight || hoverClientY < hoverTwoThirdsHeight
+            if(conditionX || conditionY){
                 moveCard(dragIndex, hoverIndex)
                 item.index = hoverIndex
             }
@@ -41,6 +47,6 @@ export default function Container({ id, text, index, moveCard }) {
     drag(cardRef)
     drop(cardRef)
     return (
-        <div ref={cardRef} className={isDragging ? 'card opacity' : 'card'}>{text}</div>
+        <div ref={cardRef} className={isDragging ? 'sourcecard opacity' : 'sourcecard'}>{text}</div>
     )
 }

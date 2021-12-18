@@ -6,8 +6,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');//清除多余文
 module.exports = {
     mode: 'development',
     performance: {
-        maxEntrypointSize: 10000000,
-        maxAssetSize: 30000000
+        maxEntrypointSize: 5000000000,
+        maxAssetSize: 5000000000
     },
     devtool: 'eval-cheap-module-source-map',// 用于开发调试，方便清楚是那个文件出错 (共有7种)
     entry: path.join(__dirname, './src/index.js'),

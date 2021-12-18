@@ -10,6 +10,9 @@ export const Home = () => {
     const goToDetail = () => {
         history.push('/detail')
     }
+    const goTo = url => () => {
+        history.push(url)
+    }
     const plus = () => {
         setValue(value + 1)
     }
@@ -43,6 +46,12 @@ export const Home = () => {
                 <Button onClick={plus} style={{ ...btnStyle }}>+</Button>
                 <Button onClick={minus} style={{ ...btnStyle }}>-</Button>
             </div>
+            <div style={{ height: 100, padding: 20, background: 'lightYellow' }}>
+                <Button onClick={goTo('/dropandmovejs')} style={{ ...btnStyle }}>Let's Go Drag!!!</Button>
+            </div>
+            {/* <div style={{ height: 100, padding: 20, background: 'lightPink' }}>
+                <Button onClick={goTo('/dropandmovets')} style={{ ...btnStyle }}>Let's Go DragTS!!!</Button>
+            </div> */}
         </div>
     )
 }
