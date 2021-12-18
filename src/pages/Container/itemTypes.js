@@ -1,2 +1,2 @@
-export const CARD = Symbol('CARD')
 export const FORMITEM = Symbol('FORMITEM')
+export const FORMITEMINFIELD = Symbol('FORMITEMINFIELD')

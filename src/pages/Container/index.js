@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
 import { FormItemWrapper } from './FormItemWrapper'
+import myContextContext from './createContext'
+
 // import TableWrapper from './TableWrapper'
 
-const commonStyle = { height: '100vh', float: 'left', overflowY: 'auto' }
+const commonStyle = { height: '100vh', overflowY: 'auto' }
 
 export default function Container() {
-    const [sourceItems, setSourceItems] = useState([
+    const [sourceItems] = useState([
         {
             type: 'input',
             name: 'Input',
@@ -18,7 +20,22 @@ export default function Container() {
             labelAlign: 'right',// 标签文本对齐方式
             labelCol: { span: 6 },// 标签占用格数
             wrapperCol: { span: 18 },// 输入框占用格数
-            rules: []// 校验规则
+            rules: [],// 校验规则
+            spanSpace: 8, //该表单项本身所占空间
+        },
+        {
+            type: 'textarea',
+            name: 'TextArea',
+            itemCode: '',// 表单项唯一的名称，必输
+            initialValue: '',// 表单项默认值
+            colon: true,// 是否显示label后面的冒号
+            label: '默认字段名',// 标签名称，必输
+            labelAlign: 'right',// 标签文本对齐方式
+            labelCol: { span: 6 },// 标签占用格数
+            wrapperCol: { span: 18 },// 输入框占用格数
+            autoSize: { minRows: 1, maxRows: 2},
+            rules: [],// 校验规则
+            spanSpace: 8 //该表单项本身所占空间
         },
         {
             type: 'select',
@@ -31,7 +48,8 @@ export default function Container() {
             labelAlign: 'right',// 标签文本对齐方式
             labelCol: { span: 6 },// 标签占用格数
             wrapperCol: { span: 18 },// 输入框占用格数
-            rules: []// 校验规则
+            rules: [],// 校验规则
+            spanSpace: 8 //该表单项本身所占空间
         },
         {
             type: 'datepicker',
@@ -43,7 +61,8 @@ export default function Container() {
             labelAlign: 'right',// 标签文本对齐方式
             labelCol: { span: 6 },// 标签占用格数
             wrapperCol: { span: 18 },// 输入框占用格数
-            rules: []// 校验规则
+            rules: [],// 校验规则
+            spanSpace: 8 //该表单项本身所占空间
         }
     ])
     const [elems, setElems] = useState([])
@@ -58,6 +77,9 @@ export default function Container() {
         arr[index1] = arr.splice(index2, 1, arr[index1])[0];
         return arr;
     }
+    useEffect(()=>{
+        console.log('elems', elems)
+    }, [elems])
     const moveItem = (dragIndex, hoverIndex) => {
         let cloneItems = [...elems]
         // dragIndex正在拖动的元素索引
@@ -66,23 +88,25 @@ export default function Container() {
         setElems(newClone)
     }
     const cloneItem = newFormItem => {
-        console.log(newFormItem)
-        const cloneItems = [...elems]
-        setElems([...cloneItems, newFormItem])
+        setElems(prevItems => {
+            return [...prevItems, newFormItem]
+        })
     }
     return (
-        <Card>
-            <div style={{ ...commonStyle, width: '16vw' }}>
+        <Row>
+            <Col span={4} style={commonStyle}>
                 {
                     sourceItems.map((item, index) => <SourceFormItem key={index} curItem={item} cloneItem={cloneItem} />)
                 }
-            </div>
-            <div style={{ ...commonStyle, width: '68vw' }}>
-                <FormItemWrapper wrapperName='form' elems={elems} moveItem={moveItem} />
-            </div>
-            <div style={{ ...commonStyle, width: '16vw' }}>
+            </Col>
+            <Col span={16} style={commonStyle}>
+                <myContextContext.Provider value={elems}>
+                    <FormItemWrapper wrapperName='form' moveItem={moveItem} />
+                </myContextContext.Provider>
+            </Col>
+            <Col span={4} style={commonStyle}>
                 编辑区
-            </div>
-        </Card>
+            </Col>
+        </Row>
     )
 }

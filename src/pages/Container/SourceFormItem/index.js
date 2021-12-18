@@ -1,10 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Input, Select, DatePicker, message } from "antd";
-import { useDrag, useDrop } from 'react-dnd'
+import React from "react";
+import { message } from "antd";
+import { useDrag } from 'react-dnd'
 import { FORMITEM } from '../itemTypes'
-import './index.less'
-
-const TextArea = Input.TextArea
 
 const style = {
     textAlign: 'center',
@@ -39,12 +36,6 @@ export const SourceFormItem = ({ curItem, cloneItem }) => {
             opacity: monitor.isDragging() ? 0.4 : 1,
         }),
     }), [name])
-    const items = {
-        input: <Input />,
-        select: <Select style={{ width: '100%' }} />,
-        textarea: <TextArea autosize={false} />,
-        datepicker: <DatePicker style={{ width: '100%' }} />,
-    }
     return (<div ref={drag} style={{ ...style, opacity }}>
         {name}
     </div>)

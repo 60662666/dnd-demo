@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useDrop } from 'react-dnd'
+import myContextContext from './../createContext'
 import MoveableItem from './../MoveableItem'
 import { FORMITEM } from './../itemTypes'
 
 const style = {
-    minHeight: '12rem',
-    marginRight: '1.5rem',
-    marginBottom: '1.5rem',
+    minHeight: 'calc(50vh - 92px)',
+    overflowY: 'auto',
+    margin: '10px',
     color: 'white',
-    padding: '1rem',
+    padding: '10px',
     textAlign: 'center',
     fontSize: '1rem',
     lineHeight: 'normal',
@@ -21,11 +22,11 @@ function selectBackgroundColor(isActive, canDrop) {
         return 'darkkhaki';
     }
     else {
-        return '#222';
+        return '#9C9C9C';
     }
 }
 
-export const FormItemWrapper = ({ wrapperName, elem, moveItem }) => {
+export const FormItemWrapper = ({ wrapperName, moveItem }) => {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: FORMITEM,
         drop: () => ({
@@ -38,12 +39,13 @@ export const FormItemWrapper = ({ wrapperName, elem, moveItem }) => {
         }),
     }), [wrapperName]);
     const isActive = canDrop && isOver;
-    const backgroundColor = selectBackgroundColor(isActive, canDrop);
+    const backgroundColor = selectBackgroundColor(isActive, canDrop)
+    const elems = useContext(myContextContext)
     return (
         <div ref={drop} style={{ ...style, backgroundColor }}>
             {
-                elem && elem.length ?
-                    elem.map((item, index) => <MoveableItem props={{ ...item }} key={index} moveItem={moveItem} />)
+                elems && elems.length ?
+                    elems.map((item, index) => <MoveableItem item={{ ...item }} key={index} index={index} moveItem={moveItem} />)
                     :
                     isActive ? '松开鼠标以放置' : '拖拽表单元素到此区域'
             }
