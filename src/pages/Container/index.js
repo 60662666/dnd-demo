@@ -9,6 +9,7 @@ import { FormItemWrapper } from './FormItemWrapper'
 const commonStyle = { height: '100vh', overflowY: 'auto' }
 
 export default function Container() {
+    // 数据区start
     const [sourceItems, setSourceItems] = useState([
         {
             type: 'input',
@@ -67,6 +68,10 @@ export default function Container() {
     ])
     const [elems, setElems] = useState([])
     const [layout, setLayout] = useState(0)
+    const [focusIndex, setFocus] = useState(undefined)
+    // 数据区end
+
+    // 方法区start
     const changeLayout = v => {
         const value = v.target.value
         setLayout(() => value)
@@ -92,18 +97,23 @@ export default function Container() {
     * @param {number} index2 删除项目的位置
     * index1和index2分别是两个数组的索引值，即是两个要交换元素位置的索引值，如1，5就是数组中下标为1和5的两个元素交换位置
     */
-    function swapArrayItem(arr, index1, index2) {
-        arr[index1] = arr.splice(index2, 1, arr[index1])[0];
-        return arr;
+    const swapArrayItem = (arr, index1, index2) => {
+        arr[index1] = arr.splice(index2, 1, arr[index1])[0]
+        return arr
     }
     // useEffect(() => {
     //     setLayout(layout => layout)
     // }, [layout])
-    const moveItem = (dragIndex, hoverIndex) => {
+    const moveItem = (dragIndex, targetIndex) => {
         let cloneItems = [...elems]
         // dragIndex正在拖动的元素索引
-        // hoverIndex放置目标的索引
-        const newClone = swapArrayItem(cloneItems, dragIndex, hoverIndex)
+        // targetIndex放置目标的索引
+        const newClone = swapArrayItem(cloneItems, dragIndex, targetIndex)
+        if(focusIndex === dragIndex){
+            setFocus(targetIndex)
+        }else if(focusIndex === targetIndex){
+            setFocus(dragIndex)
+        }
         setElems(newClone)
     }
     const cloneItem = newFormItem => {
@@ -111,10 +121,11 @@ export default function Container() {
             return [...prevItems, newFormItem]
         })
     }
-    const [focusIndex, setFocus] = useState(undefined)
     const handleFocus = v => () => {
         setFocus(v)
     }
+    // 方法区end
+
     return (
         <Row>
             <Col span={4} style={commonStyle}>
