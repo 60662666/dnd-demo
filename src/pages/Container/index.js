@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
 import { FormItemWrapper } from './FormItemWrapper'
-import myContextContext from './createContext'
+// import myContextContext from './createContext'
 
 // import TableWrapper from './TableWrapper'
 
 const commonStyle = { height: '100vh', overflowY: 'auto' }
 
 export default function Container() {
-    const [sourceItems] = useState([
+    const [sourceItems, setSourceItems] = useState([
         {
             type: 'input',
             name: 'Input',
@@ -33,7 +33,7 @@ export default function Container() {
             labelAlign: 'right',// 标签文本对齐方式
             labelCol: { span: 6 },// 标签占用格数
             wrapperCol: { span: 18 },// 输入框占用格数
-            autoSize: { minRows: 1, maxRows: 2},
+            autoSize: { minRows: 1, maxRows: 2 },
             rules: [],// 校验规则
             spanSpace: 8 //该表单项本身所占空间
         },
@@ -66,6 +66,25 @@ export default function Container() {
         }
     ])
     const [elems, setElems] = useState([])
+    const [layout, setLayout] = useState(0)
+    const changeLayout = v => {
+        const value = v.target.value
+        setLayout(() => value)
+        setElems((prevItems) => {
+            if (prevItems && prevItems.length) {
+                prevItems.forEach(item => {
+                    item.spanSpace = value
+                })
+            }
+            return prevItems
+        })
+        setSourceItems((prevItems) => {
+            prevItems.forEach(item => {
+                item.spanSpace = value
+            })
+            return prevItems
+        })
+    }
     /**
     * 数组元素交换位置
     * @param {array} arr 数组
@@ -77,9 +96,9 @@ export default function Container() {
         arr[index1] = arr.splice(index2, 1, arr[index1])[0];
         return arr;
     }
-    useEffect(()=>{
-        console.log('elems', elems)
-    }, [elems])
+    // useEffect(() => {
+    //     setLayout(layout => layout)
+    // }, [layout])
     const moveItem = (dragIndex, hoverIndex) => {
         let cloneItems = [...elems]
         // dragIndex正在拖动的元素索引
@@ -92,6 +111,10 @@ export default function Container() {
             return [...prevItems, newFormItem]
         })
     }
+    const [focusIndex, setFocus] = useState(undefined)
+    const handleFocus = v => () => {
+        setFocus(v)
+    }
     return (
         <Row>
             <Col span={4} style={commonStyle}>
@@ -100,9 +123,17 @@ export default function Container() {
                 }
             </Col>
             <Col span={16} style={commonStyle}>
-                <myContextContext.Provider value={elems}>
-                    <FormItemWrapper wrapperName='form' moveItem={moveItem} />
-                </myContextContext.Provider>
+                {/* <myContextContext.Provider value={elems}> */}
+                <FormItemWrapper
+                    wrapperName='form'
+                    elems={elems}
+                    moveItem={moveItem}
+                    layout={layout}
+                    changeLayout={changeLayout}
+                    focusIndex={focusIndex}
+                    handleFocus={handleFocus}
+                />
+                {/* </myContextContext.Provider> */}
             </Col>
             <Col span={4} style={commonStyle}>
                 编辑区
