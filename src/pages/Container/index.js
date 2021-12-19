@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
 import { FormItemWrapper } from './FormItemWrapper'
+import { EditField } from './EditField'
+import { SOURCE_ITEMS } from './constant'
 // import myContextContext from './createContext'
 
 // import TableWrapper from './TableWrapper'
@@ -10,65 +12,11 @@ const commonStyle = { height: '100vh', overflowY: 'auto' }
 
 export default function Container() {
     // 数据区start
-    const [sourceItems, setSourceItems] = useState([
-        {
-            type: 'input',
-            name: 'Input',
-            itemCode: '',// 表单项唯一的名称，必输
-            initialValue: '',// 表单项默认值
-            colon: true,// 是否显示label后面的冒号
-            label: '默认字段名',// 标签名称，必输
-            labelAlign: 'right',// 标签文本对齐方式
-            labelCol: { span: 6 },// 标签占用格数
-            wrapperCol: { span: 18 },// 输入框占用格数
-            rules: [],// 校验规则
-            spanSpace: 8, //该表单项本身所占空间
-        },
-        {
-            type: 'textarea',
-            name: 'TextArea',
-            itemCode: '',// 表单项唯一的名称，必输
-            initialValue: '',// 表单项默认值
-            colon: true,// 是否显示label后面的冒号
-            label: '默认字段名',// 标签名称，必输
-            labelAlign: 'right',// 标签文本对齐方式
-            labelCol: { span: 6 },// 标签占用格数
-            wrapperCol: { span: 18 },// 输入框占用格数
-            autoSize: { minRows: 1, maxRows: 2 },
-            rules: [],// 校验规则
-            spanSpace: 8 //该表单项本身所占空间
-        },
-        {
-            type: 'select',
-            name: 'Select',
-            itemCode: '',// 表单项唯一的名称，必输
-            initialValue: '',// 表单项默认值
-            options: [],// 下拉框的Option
-            colon: true,// 是否显示label后面的冒号
-            label: '默认字段名',// 标签名称，必输
-            labelAlign: 'right',// 标签文本对齐方式
-            labelCol: { span: 6 },// 标签占用格数
-            wrapperCol: { span: 18 },// 输入框占用格数
-            rules: [],// 校验规则
-            spanSpace: 8 //该表单项本身所占空间
-        },
-        {
-            type: 'datepicker',
-            name: 'Datepicker',
-            itemCode: '',// 表单项唯一的名称，必输
-            initialValue: null,// 表单项默认值
-            colon: true,// 是否显示label后面的冒号
-            label: '默认字段名',// 标签名称，必输
-            labelAlign: 'right',// 标签文本对齐方式
-            labelCol: { span: 6 },// 标签占用格数
-            wrapperCol: { span: 18 },// 输入框占用格数
-            rules: [],// 校验规则
-            spanSpace: 8 //该表单项本身所占空间
-        }
-    ])
+    const [sourceItems, setSourceItems] = useState(SOURCE_ITEMS)
     const [elems, setElems] = useState([])
     const [layout, setLayout] = useState(0)
     const [focusIndex, setFocus] = useState(undefined)
+    const [editItem, setEditItem] = useState(null)
     // 数据区end
 
     // 方法区start
@@ -101,31 +49,45 @@ export default function Container() {
         arr[index1] = arr.splice(index2, 1, arr[index1])[0]
         return arr
     }
-    // useEffect(() => {
-    //     setLayout(layout => layout)
-    // }, [layout])
     const moveItem = (dragIndex, targetIndex) => {
         let cloneItems = [...elems]
         // dragIndex正在拖动的元素索引
         // targetIndex放置目标的索引
         const newClone = swapArrayItem(cloneItems, dragIndex, targetIndex)
-        if(focusIndex === dragIndex){
+        if (focusIndex === dragIndex) {
             setFocus(targetIndex)
-        }else if(focusIndex === targetIndex){
+            setEditItem(prevItem => {
+                return newClone[targetIndex]
+            })
+        } else if (focusIndex === targetIndex) {
             setFocus(dragIndex)
+            setEditItem(prevItem => {
+                return newClone[dragIndex]
+            })
         }
         setElems(newClone)
     }
     const cloneItem = newFormItem => {
+        const deepCloneItem = {}
+        for (let key in newFormItem) {
+            deepCloneItem[key] = newFormItem[key]
+        }
         setElems(prevItems => {
             return [...prevItems, newFormItem]
         })
     }
     const handleFocus = v => () => {
         setFocus(v)
+        setEditItem(prevItem => {
+            return elems[v]
+        })
     }
     // 方法区end
-
+    // useEffect(() => {
+    //     if (focusIndex >= 0) {
+    //         console.log('大于等于零', focusIndex)
+    //     }
+    // }, [focusIndex])
     return (
         <Row>
             <Col span={4} style={commonStyle}>
@@ -147,7 +109,7 @@ export default function Container() {
                 {/* </myContextContext.Provider> */}
             </Col>
             <Col span={4} style={commonStyle}>
-                编辑区
+                <EditField editItem={editItem} index={focusIndex} />
             </Col>
         </Row>
     )

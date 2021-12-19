@@ -8,9 +8,12 @@ import './index.less'
 export default function MoveableItem({ item, index, moveItem, focusIndex, handleFocus }) {
     // movingItem 拖动源的连接器，连接真实dom与reactdnd系统
     const movingItem = useRef()// {current: null} 生成真实dom赋给ref.current
-    const [, drop] = useDrop({
+    const [{ canDrop, isOver }, drop] = useDrop({
         accept: FORMITEMINFIELD,
-        collect: () => ({}),
+        collect: (monitor) => ({
+            isOver: monitor.isOver(),
+            canDrop: monitor.canDrop(),
+        }),
         drop(item, monitor) {
             // 获取被拖动的卡片的索引
             const dragIndex = item.index
@@ -47,13 +50,17 @@ export default function MoveableItem({ item, index, moveItem, focusIndex, handle
     })
     drag(movingItem)
     drop(movingItem)
+    const isActive = canDrop && isOver;
     const width = `calc(${item.spanSpace / 24 * 100}% - 2px)`
     let curClass = 'movableitem'
-    if(focusIndex === index){
+    if (focusIndex === index) {
         curClass = curClass + ' focus'
     }
-    if(isDragging){
+    if (isDragging) {
         curClass = curClass + ' opacity'
+    }
+    if (isActive) {
+        curClass = curClass + ' candrop'
     }
     return (
         <div ref={movingItem} className={curClass} onClick={handleFocus(index)} style={{ width }}>
