@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
 import { FormItemWrapper } from './FormItemWrapper'
-import { EditField } from './EditField'
+import EditField from './EditField'
 import { SOURCE_ITEMS } from './constant'
 // import myContextContext from './createContext'
 
@@ -82,6 +82,13 @@ export default function Container() {
             return elems[v]
         })
     }
+    const handleEditItem = (v, code, index) => {
+        setElems(prevElems => {
+            const cloneItems = [...prevElems]
+            cloneItems[index][code] = v
+            return cloneItems
+        })
+    }
     // 方法区end
     // useEffect(() => {
     //     if (focusIndex >= 0) {
@@ -90,12 +97,12 @@ export default function Container() {
     // }, [focusIndex])
     return (
         <Row>
-            <Col span={4} style={commonStyle}>
+            <Col span={3} style={commonStyle}>
                 {
                     sourceItems.map((item, index) => <SourceFormItem key={index} curItem={item} cloneItem={cloneItem} />)
                 }
             </Col>
-            <Col span={16} style={commonStyle}>
+            <Col span={15} style={commonStyle}>
                 {/* <myContextContext.Provider value={elems}> */}
                 <FormItemWrapper
                     wrapperName='form'
@@ -108,8 +115,8 @@ export default function Container() {
                 />
                 {/* </myContextContext.Provider> */}
             </Col>
-            <Col span={4} style={commonStyle}>
-                <EditField editItem={editItem} index={focusIndex} />
+            <Col span={6} style={commonStyle}>
+                <EditField editItem={editItem} index={focusIndex} handleEditItem={handleEditItem} />
             </Col>
         </Row>
     )
