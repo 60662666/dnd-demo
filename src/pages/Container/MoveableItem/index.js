@@ -1,11 +1,19 @@
 import React, { useState, useRef } from "react";
 import { useDrag, useDrop } from 'react-dnd'
-import { Button } from "antd";
+import { Button, Icon, Input, Select, DatePicker } from "antd";
+import moment from "moment";
 import { FORMITEM, FORMITEMINFIELD } from './../itemTypes'
 import './index.less'
+
+const TextArea = Input.TextArea
+const Option = Select.Option
 // useDrag对应拖动源DragSource
 // useDrop对应放置目标DropTarget
-export default function MoveableItem({ item, index, moveItem, focusIndex, handleFocus }) {
+export default function MoveableItem({
+    item, index, moveItem, focusIndex,
+    handleFocus, handleMoveEnterAndLeave, handleDel,
+    getFieldDecorator, FormItem
+}) {
     // movingItem 拖动源的连接器，连接真实dom与reactdnd系统
     const movingItem = useRef()// {current: null} 生成真实dom赋给ref.current
     const [{ canDrop, isOver }, drop] = useDrop({
@@ -62,9 +70,50 @@ export default function MoveableItem({ item, index, moveItem, focusIndex, handle
     if (isActive) {
         curClass = curClass + ' candrop'
     }
+    if (item.isHovered) {
+        curClass = curClass + ' ishovered'
+    }
     return (
-        <div ref={movingItem} className={curClass} onClick={handleFocus(index)} style={{ width }}>
-            {item.name}
-        </div>
+        <div
+            ref={movingItem}
+            className={curClass}
+            onClick={handleFocus(index)}
+            style={{ width }}
+            onMouseEnter={handleMoveEnterAndLeave(index, 'enter')}
+            onMouseLeave={handleMoveEnterAndLeave(index, 'leave')}
+        >
+            <FormItem
+                label={item.label}
+                labelCol={{ span: item.labelCol }}
+                wrapperCol={{ span: item.wrapperCol }}
+            >
+                {
+                    getFieldDecorator(`${item.itemCode}${index}`, {
+                        initialValue: item.type === 'datepicker' ? moment() : item.initialValue,
+                        rules: item.rules
+                    })(
+                        item.type === 'input' ?
+                            <Input />
+                            : item.type === 'select' ?
+                                <Select style={{ width: '100%' }}>
+                                    {
+                                        item.options.map(child => <Option key={child.code} value={child.code}>{child.value}</Option>)
+                                    }
+                                </Select>
+                                : item.type === 'textarea' ?
+                                    <TextArea autoSize={{ minRows: item.minRows, maxRows: item.maxRows }} />
+                                    : item.type === 'datepicker' ?
+                                        <DatePicker format={item.format} style={{ width: '100%' }} />
+                                        : null
+                    )
+                }
+            </FormItem>
+            {
+                item.isHovered &&
+                <div className="close-btn" onClick={e => handleDel(e, index)}>
+                    <Icon type="close-circle" />
+                </div>
+            }
+        </div >
     )
 }

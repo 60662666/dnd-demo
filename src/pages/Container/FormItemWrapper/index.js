@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { useDrop } from 'react-dnd'
-import { Radio } from 'antd'
+import { Form, Radio } from 'antd'
 // import myContextContext from './../createContext'
 import MoveableItem from './../MoveableItem'
 import { FORMITEM } from './../itemTypes'
+
+const FormItem = Form.Item
 
 const style = {
     position: 'relative',
@@ -29,7 +31,12 @@ function selectBackgroundColor(isActive, canDrop) {
     }
 }
 
-export const FormItemWrapper = ({ wrapperName, elems, moveItem, layout, changeLayout, focusIndex, handleFocus }) => {
+const FormItemWrapper = props => {
+    const {
+        wrapperName, elems, moveItem, layout, changeLayout,
+        focusIndex, handleFocus, handleMoveEnterAndLeave, handleDel,
+        form: { getFieldDecorator }
+    } = props
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: FORMITEM,
         drop: () => ({
@@ -57,19 +64,26 @@ export const FormItemWrapper = ({ wrapperName, elems, moveItem, layout, changeLa
                     </div>
                     : null
             }
-            {
-                elems && elems.length ?
-                    elems.map((item, index) => <MoveableItem
-                        item={{ ...item }}
-                        key={index}
-                        index={index}// 当前项在数组中的索引
-                        moveItem={moveItem}// function 两个项目互换位置的方法
-                        focusIndex={focusIndex}// 当前高亮/编辑的表单项
-                        handleFocus={handleFocus}// function 处理高亮/编辑态的方法
-                    />)
-                    :
-                    isActive ? '松开鼠标以放置' : '拖拽表单元素到此区域'
-            }
+            <Form>
+                {
+                    elems && elems.length ?
+                        elems.map((item, index) => <MoveableItem
+                            item={{ ...item }}
+                            key={index}
+                            index={index}// 当前项在数组中的索引
+                            moveItem={moveItem}// function 两个项目互换位置的方法
+                            focusIndex={focusIndex}// 当前高亮/编辑的表单项
+                            handleFocus={handleFocus}// function 处理高亮/编辑态的方法
+                            handleMoveEnterAndLeave={handleMoveEnterAndLeave}//鼠标移入移出高亮显示
+                            handleDel={handleDel}// 删除一个元素
+                            getFieldDecorator={getFieldDecorator}
+                            FormItem={FormItem}
+                        />)
+                        :
+                        isActive ? '松开鼠标以放置' : '拖拽表单元素到此区域'
+                }
+            </Form>
         </div>
     )
 }
+export default Form.create()(FormItemWrapper)

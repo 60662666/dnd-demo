@@ -1,5 +1,6 @@
 .movableitem {
-    height: 40px;
+    position: relative;
+    height: 42px;
     background: #FFF;
     color: rgba(0, 0, 0, 0.65);
     line-height: 40px;
@@ -12,11 +13,23 @@
     box-sizing: border-box;
     border: 1px dashed gray;
     border-radius: 4px;
+    padding: 0 4px 0px;
+    .close-btn {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        top: -8px;
+        right: -8px;
+        color: #F53C32;
+        cursor: default;
+        z-index: 1;
+    }
 }
 .movableitem.opacity {
     opacity: .3;
 }
-.movableitem.focus {
+.movableitem.focus, .movableitem.ishovered {
     box-shadow: 0 0 5px #FFC125;
     background: #C1FFC1;
 }

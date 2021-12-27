@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
-import { FormItemWrapper } from './FormItemWrapper'
+import FormItemWrapper from './FormItemWrapper'
 import EditField from './EditField'
 import { SOURCE_ITEMS } from './constant'
 // import myContextContext from './createContext'
@@ -49,6 +49,7 @@ export default function Container() {
         arr[index1] = arr.splice(index2, 1, arr[index1])[0]
         return arr
     }
+    // 交互中央区域内元素位置
     const moveItem = (dragIndex, targetIndex) => {
         let cloneItems = [...elems]
         // dragIndex正在拖动的元素索引
@@ -67,21 +68,48 @@ export default function Container() {
         }
         setElems(newClone)
     }
+    // 为中央区域添加元素
     const cloneItem = newFormItem => {
         const deepCloneItem = {}
         for (let key in newFormItem) {
             deepCloneItem[key] = newFormItem[key]
         }
         setElems(prevItems => {
-            return [...prevItems, newFormItem]
+            return [...prevItems, deepCloneItem]
         })
     }
+    // 高亮显示当前编辑项目
     const handleFocus = v => () => {
         setFocus(v)
-        setEditItem(prevItem => {
+        setEditItem(() => {
             return elems[v]
         })
     }
+    // 鼠标移入移出事件
+    const handleMoveEnterAndLeave = (index, type) => () => {
+        setElems(prevElems => {
+            const cloneItems = [...prevElems]
+            const isHovered = type === 'enter' ? true : false
+            cloneItems[index].isHovered = isHovered
+            return cloneItems
+        })
+    }
+    // 删除元素
+    const handleDel = (e, index) => {
+        e.stopPropagation()
+        setElems(prevElems => {
+            const cloneItems = [...prevElems]
+            if (index === focusIndex) {
+                setFocus(undefined)
+                setEditItem(prevItems => {
+                    return prevItems[index]
+                })
+            }
+            cloneItems.splice(index, 1)
+            return cloneItems
+        })
+    }
+    // 改变元素属性，code，initialValue等等
     const handleEditItem = (v, code, index) => {
         setElems(prevElems => {
             const cloneItems = [...prevElems]
@@ -112,6 +140,8 @@ export default function Container() {
                     changeLayout={changeLayout}
                     focusIndex={focusIndex}
                     handleFocus={handleFocus}
+                    handleMoveEnterAndLeave={handleMoveEnterAndLeave}
+                    handleDel={handleDel}
                 />
                 {/* </myContextContext.Provider> */}
             </Col>
