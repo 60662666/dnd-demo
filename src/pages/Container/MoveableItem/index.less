@@ -14,16 +14,26 @@
     border: 1px dashed gray;
     border-radius: 4px;
     padding: 0 4px 0px;
+    .mask {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
     .close-btn {
         position: absolute;
         width: 16px;
         height: 16px;
         line-height: 16px;
+        border-radius: 8px;
         top: -8px;
         right: -8px;
-        color: #F53C32;
-        cursor: default;
-        z-index: 1;
+        background-color: #F53C32;
+        color: #FFF;
+        cursor: pointer;
+        z-index: 2;
     }
 }
 .movableitem.opacity {

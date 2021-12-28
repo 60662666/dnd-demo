@@ -1,7 +1,7 @@
 export const SOURCE_ITEMS = [
     {
         type: 'input',
-        name: 'Input',
+        name: '单行文本',
         itemCode: 'defaultCode',// 表单项唯一的名称，必输
         initialValue: '',// 表单项默认值
         label: '默认字段名',// 标签名称，必输
@@ -13,7 +13,7 @@ export const SOURCE_ITEMS = [
     },
     {
         type: 'textarea',
-        name: 'TextArea',
+        name: '多行文本',
         itemCode: 'defaultCode',// 表单项唯一的名称，必输
         initialValue: '',// 表单项默认值
         label: '默认字段名',// 标签名称，必输
@@ -26,7 +26,7 @@ export const SOURCE_ITEMS = [
     },
     {
         type: 'select',
-        name: 'Select',
+        name: '下拉选择框',
         itemCode: 'defaultCode',// 表单项唯一的名称，必输
         initialValue: '',// 表单项默认值
         options: [],// 下拉框的Option
@@ -39,11 +39,12 @@ export const SOURCE_ITEMS = [
     },
     {
         type: 'datepicker',
-        name: 'Datepicker',
+        name: '日期选择器',
         itemCode: 'defaultCode',// 表单项唯一的名称，必输
         initialValue: null,// 表单项默认值
         format: 'YYYY-MM-DD',//datePicker专有项，日期格式
         label: '默认字段名',// 标签名称，必输
+        showTime: false,
         labelCol: 6,// 标签占用格数
         wrapperCol: 18,// 输入框占用格数
         rules: [],// 校验规则

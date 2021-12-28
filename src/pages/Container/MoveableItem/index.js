@@ -103,15 +103,16 @@ export default function MoveableItem({
                                 : item.type === 'textarea' ?
                                     <TextArea autoSize={{ minRows: item.minRows, maxRows: item.maxRows }} />
                                     : item.type === 'datepicker' ?
-                                        <DatePicker format={item.format} style={{ width: '100%' }} />
+                                        <DatePicker format={item.format} showTime={item.showTime} style={{ width: '100%' }} />
                                         : null
                     )
                 }
             </FormItem>
+            <div className="mask" />
             {
                 item.isHovered &&
                 <div className="close-btn" onClick={e => handleDel(e, index)}>
-                    <Icon type="close-circle" />
+                    <Icon type="close" />
                 </div>
             }
         </div >

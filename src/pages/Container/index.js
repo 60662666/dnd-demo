@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card } from 'antd'
+import { Form, Row, Col, Card, Button, message } from 'antd'
 import { SourceFormItem } from './SourceFormItem'
 import FormItemWrapper from './FormItemWrapper'
 import EditField from './EditField'
@@ -9,8 +9,12 @@ import { SOURCE_ITEMS } from './constant'
 // import TableWrapper from './TableWrapper'
 
 const commonStyle = { height: '100vh', overflowY: 'auto' }
+const titleStyle = { fontSize: '1rem', textAlign: 'right' }
+const titleTextStyle = { display: 'inline-block', height: 32, lineHeight: '32px' }
+const cardStyle = { padding: 10 }
 
-export default function Container() {
+function Container(props) {
+    const { getFieldDecorator, validateFields } = props.form
     // 数据区start
     const [sourceItems, setSourceItems] = useState(SOURCE_ITEMS)
     const [elems, setElems] = useState([])
@@ -111,10 +115,27 @@ export default function Container() {
     }
     // 改变元素属性，code，initialValue等等
     const handleEditItem = (v, code, index) => {
+        const codeType = code.includes('.')
         setElems(prevElems => {
             const cloneItems = [...prevElems]
-            cloneItems[index][code] = v
+            if (!codeType) {
+                cloneItems[index][code] = v
+            } else {
+                const code0 = code.split('.')[0]
+                const code1 = code.split('.')[1]
+                cloneItems[index][[code0]][code1] = v
+            }
             return cloneItems
+        })
+    }
+    // 保存这个页面
+    const handleSubmit = e => {
+        e.preventDefault();
+        validateFields((err, values) => {
+            if (!err) {
+                message.loading('正在保存')
+                console.log('Received values of form: ', values);
+            }
         })
     }
     // 方法区end
@@ -126,11 +147,19 @@ export default function Container() {
     return (
         <Row>
             <Col span={3} style={commonStyle}>
+                <Card bodyStyle={cardStyle}>
+                    <div style={titleStyle}><span style={titleTextStyle}>表单元素库</span></div>
+                </Card>
                 {
                     sourceItems.map((item, index) => <SourceFormItem key={index} curItem={item} cloneItem={cloneItem} />)
                 }
             </Col>
             <Col span={15} style={commonStyle}>
+                <Card bodyStyle={cardStyle}>
+                    <div style={titleStyle}>
+                        <div style={titleStyle}><span style={titleTextStyle}>页面布局</span></div>
+                    </div>
+                </Card>
                 {/* <myContextContext.Provider value={elems}> */}
                 <FormItemWrapper
                     wrapperName='form'
@@ -146,8 +175,21 @@ export default function Container() {
                 {/* </myContextContext.Provider> */}
             </Col>
             <Col span={6} style={commonStyle}>
-                <EditField editItem={editItem} index={focusIndex} handleEditItem={handleEditItem} />
+                <Form onSubmit={handleSubmit}>
+                    <Card bodyStyle={cardStyle}>
+                        <div style={titleStyle}>
+                            <span style={{ ...titleTextStyle, marginRight: 10 }}>元素编辑器</span>
+                            <Button type="primary" htmlType="submit">保存</Button>
+                        </div>
+                    </Card>
+                    <EditField
+                        editItem={editItem} index={focusIndex} handleEditItem={handleEditItem}
+                        validateFields={validateFields} getFieldDecorator={getFieldDecorator}
+                        FormItem={Form.Item}
+                    />
+                </Form>
             </Col>
         </Row>
     )
 }
+export default Form.create()(Container)

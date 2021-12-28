@@ -1,6 +1,7 @@
 import React from "react";
 import { message } from "antd";
 import { useDrag } from 'react-dnd'
+import { Row, Col, Icon } from "antd";
 import { FORMITEM } from '../itemTypes'
 
 const style = {
@@ -12,7 +13,7 @@ const style = {
 }
 
 export const SourceFormItem = ({ curItem, cloneItem }) => {
-    const { name } = curItem
+    const { type, name } = curItem
     const [{ opacity }, drag] = useDrag(() => ({
         type: FORMITEM,
         item: { name },
@@ -36,7 +37,16 @@ export const SourceFormItem = ({ curItem, cloneItem }) => {
             opacity: monitor.isDragging() ? 0.4 : 1,
         }),
     }), [name])
+    const IconTypes = {
+        input: <Icon type="line" />,
+        textarea: <Icon type="menu" />,
+        select: <Icon type="down-square" />,
+        datepicker: <Icon type="calendar" />
+    }
     return (<div ref={drag} style={{ ...style, opacity }}>
-        {name}
+        <Row>
+            <Col span={6} style={{ textAlign: 'right' }}>{IconTypes[type]}</Col>
+            <Col span={18} style={{ textAlign: 'left', paddingLeft: 4 }}>{name}</Col>
+        </Row>
     </div>)
 };
