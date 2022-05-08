@@ -4,6 +4,7 @@ import { Home } from './../pages/home';
 import { Detail } from './../pages/detail';
 import DropOrMoveJS from './../pages/DropOrMoveJS'
 // import { DropOrMoveTS } from './../pages/DorpOrMoveTS'
+import OriginReduxCounter from './../pages/originReduxCounter'
 
 const Router = () => (
     <HashRouter>
@@ -12,6 +13,7 @@ const Router = () => (
             <Route exact path='/detail' component={Detail} />
             <Route exact path='/dropandmovejs' component={DropOrMoveJS} />
             {/* <Route exact path='/dropandmovets' component={DropOrMoveTS} /> */}
+            <Route exact path='/couter' component={OriginReduxCounter} />
         </Switch>
     </HashRouter>
 )

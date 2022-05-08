@@ -49,9 +49,9 @@ export const Home = () => {
             <div style={{ height: 100, padding: 20, background: 'lightYellow' }}>
                 <Button onClick={goTo('/dropandmovejs')} style={{ ...btnStyle }}>Let's Go Drag!!!</Button>
             </div>
-            {/* <div style={{ height: 100, padding: 20, background: 'lightPink' }}>
-                <Button onClick={goTo('/dropandmovets')} style={{ ...btnStyle }}>Let's Go DragTS!!!</Button>
-            </div> */}
+            <div style={{ height: 100, padding: 20, background: 'lightPink' }}>
+                <Button onClick={goTo('/couter')} style={{ ...btnStyle }}>OriginReduxCounter</Button>
+            </div>
         </div>
     )
 }
